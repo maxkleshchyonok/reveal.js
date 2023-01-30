@@ -16,8 +16,146 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-background-color="rgb(188, 247, 238)">
+					<img style="width: 200px" src="examples/assets/images/pic_logo.svg">
+					<h1>JSON Web Tokens</h1>
+				</section>
+				<section data-background-color="rgb(201, 222, 245)">
+					<h1 style="margin-top: -5%; color: #6a1520">What is a JWT?</h1>
+					<p style="background: rgba(175,175,175,0.24); border-radius: 20px; padding: 5% 2% 5% 2%">JSON WEB TOKEN is an open industry standard used to share information between two entities,
+						usually a client (like your app’s frontend) and a server (your app’s backend).</p>
+				</section>
+				<section data-background-color="rgb(247, 235, 235)">
+					<h1 style="font-size: 50px; color: #3f3f3f">How does it work?</h1>
+					<img src="examples/assets/images/scheme.png" style="width: 80%">
+				</section>
+				<section data-background-color="rgb(247, 231, 203)">
+					<section><h1 style="color: #3b759e; font-size: 50px">Structure of JWT</h1>
+						<img src="https://research.securitum.com/wp-content/uploads/sites/2/2019/10/jwt_ng1_en.png">
+					</section>
+					<section>
+						<h1 style="color: #6a1520">Header:<p style="color: #3f3f3f; font-size: 40px;">
+							Consists of two parts:<ul style="font-size: 35px">
+							<li style="margin-bottom: 5%; margin-top: 4%">The signing algorithm that’s being used.</li>
+							<li>The type of token, which, in this case, is mostly “JWT”.</li>
+						</ul>
+						</p></h1>
+					</section>
+					<section>
+						<h1 style="color: #6a1520">Payload:
+							<p style="color: #3f3f3f; font-size: 40px">The payload contains the claims or the JSON object.</p>
+						</h1>
+					</section>
+					<section>
+						<h1 style="color: #6a1520">Signature:
+							<p style="color: #3f3f3f; font-size: 40px">A string that is generated via a cryptographic algorithm that can be used to verify the integrity of the JSON payload.</p>
+						</h1>
+					</section>
+				</section>
+				<section data-background-color="rgb(234, 245, 213)">
+					<p>The easiest way to explain how a JWT works is via an example. We will start by creating a JWT for a specific JSON payload and then go about verifying it:</p>
+				</section>
+				<section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<div style="display: flex; flex-direction: column; align-items: center">
+							<h1>Create a JSON</h1>
+							<p>Let’s take the following minimal JSON payload:</p>
+							<div style="width: 500px; height: 250px; border-radius: 25px; background: rgba(80,49,53,0.27); text-align: left; margin-top: 3%; padding-left: 2%">
+								<p>
+									{<br>
+									"userId": "abcd123",<br>
+									"expiry": 1646635611301<br>
+									}</p>
+							</div>
+						</div>
+					</section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<h1 style="font-size: 50px">Create a JWT signing key and decide the signing algorithm</h1>
+						<ul>
+							<li>
+								<p>Signing key:</p>
+								<p style="color: deeppink; background: #3f3f3f">NTNv7j0TuYARvmNMmWXo6fKvM4o6nv/aUi9ryX38ZH<br>+L1bkrnD1ObOQ8JAUmHCBq7Iy7otZcyAagBLH<br>VKvvYaIpmMuxmARQ97jUVG16Jkpkp1wXOP<br>srF9zwew6TpczyHkHgX5EuLg2MeBuiT/qJ<br>ACs1J0apruOOJCg/gOtkjB4c=</p>
+							</li>
+							<li>
+								<p>Signing algorithm:</p>
+								<p style="color: deeppink; background: #3f3f3f; width: 150px">
+									HS256
+								</p>
+							</li>
+						</ul>
+					</section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<div style="display: flex; align-items: center; flex-direction: column">
+							<h1 style="font-size: 50px">Creating the “Header”</h1>
+							<div style="width: 500px; height: 250px; border-radius: 25px; background: rgba(80,49,53,0.27); text-align: left; margin-top: 3%; padding-left: 2%">
+								<p>
+									{<br>
+									"typ": "JWT",<br>
+									"alg": "HS256"<br>
+									}</p>
+							</div>
+						</div>
+					</section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<h1 style="font-size: 50px">Create a signature</h1>
+						<ul style="font-size: 25px">
+							<li>First, we remove all the spaces from the payload JSON and then base64 encode it to give us<br> <p style="color: deeppink; background: #3f3f3f; width: 900px">eyJ1c2VySWQiOiJhYmNkMTIzIiwiZXhwaXJ5IjoxNjQ2NjM1NjExMzAxfQ</p></li>
+							<li>Similarly, we remove the spaces from the header JSON and base64 encode it to give us: <p style="color: deeppink; background: #3f3f3f; width: 550px">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9</p></li>
+							<li>We concatenate both the base 64 strings, with a . in the middle like 'header'.'payload', giving us <p style="color: deeppink; background: #3f3f3f; width: 880px">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJhYmNkMTIzIiwiZXhwaXJ<br>5IjoxNjQ2NjM1NjExMzAxfQ</p> There is no special reason to do it this way other than to set a convention that the industry can follow.</li>
+							<li>Now we run the Base64 + HMACSHA256 function on the above concatenated string<br> and the secret to give us the signature:</li>
+						</ul>
+					</section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<div style="width: 900px; height: 550px; border-radius: 25px; background: rgba(80,49,53,0.27); text-align: left; margin-top: 3%; padding-left: 2%; font-size: 24px">
+							<p>
+
+								Base64URLSafe(<br>
+								HMACSHA256("<p style="color: deeppink; background: #3f3f3f; width: 860px">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJhYmNkMTIzIiwiZXhwaX<br>J5IjoxNjQ2NjM1NjExMzAxfQ", "NTNv7j0TuYARvmNMmWXo6fKvM4o6nv/aUi9ryX38ZH+L1bkrn<br>D1ObOQ8JAUmHCBq7Iy7otZcyAagBLHVKvvYaIpmMu<br>xmARQ97jUVG16Jkpkp1wXOPsrF9zwew6TpczyHkHgX5EuL<br>g2MeBuiT/qJACs1J0apruOOJCg/gOtkjB4c="</p><br>)
+								)<br>
+
+								Results in:<br>
+							<p style="color: deeppink; background: #3f3f3f; width: 70%">3Thp81rDFrKXr3WrY1MyMnNK8kKoZBX9lg-JwFznR-M</p>
+							</p>
+						</div>
+					</section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<div style="display: flex; flex-direction: column; align-items: center">
+							<h1 style="font-size: 50px">Creating the JWT</h1>
+							<p>Finally, we append the generated signature like 'header'.'body'.'signature' to create our JWT:</p>
+							<div style="width: 760px; padding-top: 2%; height: 350px; border-radius: 25px; background: rgba(80,49,53,0.27); text-align: left; margin-top: 3%; padding-left: 2%">
+								<p style="color: #1a6091">
+									eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.<br>eyJ1c2VySWQiOiJhYmNkMTIzIiwiZXhw<br>aXJ5IjoxNjQ2NjM1NjExMzAxfQ.3Thp81r<br>DFrKXr3WrY1MyMnNK8kKoZBX9lg-JwFznR-M
+								</p>
+							</div>
+						</div>
+					</section>
+					<section data-background-color="rgb(234, 245, 213)">
+						<h1 style="font-size: 50px">Verifying the JWT</h1>
+						<p>The auth server will send the JWT back to the client’s frontend. The frontend will attach the JWT to network requests to the client’s api layer. The api layer will do the following steps to verify the JWT</p>
+					</section>
+				</section>
+				<section data-background-color="rgb(235, 255, 245)">
+					<div style="display: flex; flex-direction: column; align-items: center">
+						<h1 style="font-size: 50px; margin-bottom: 8%">Pros and Cons of JWTs</h1>
+						<div style="display: flex;">
+							<div style="margin-right: 10%">
+								<h6 style="color: #396c39">Advantages:</h6>
+								<ul style="font-size: 24px">
+									<li>Secure</li>
+									<li>Stored only on the client</li>
+									<li>Efficient / Stateless</li>
+								</ul>
+							</div>
+							<div>
+								<h6 style="color: #6a1520">Disadvantages:</h6>
+								<ul style="font-size: 24px">
+									<li>Non-revocable</li>
+									<li>Dependent on one secret key</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
 			</div>
 		</div>
 
